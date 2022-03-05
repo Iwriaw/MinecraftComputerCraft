@@ -37,9 +37,37 @@ oreList = {
   'immersiveengineering:ore_uranium',
   'immersiveengineering:deepslate_ore_uranium'
 }
+-- valuable item list
+valuableItemList = {
+  'minecraft:coal',
+  'minecraft:raw_iron',
+  'minecraft:raw_copper',
+  'minecraft:raw_gold',
+  'minecraft:diamond',
+  'minecraft:emerald',
+  'minecraft:redstone',
+  'minecraft:lapis_lazuli',
+  'minecraft:quartz',
+  'immersiveengineering:raw_aluninum',
+  'immersiveengineering:raw_lead',
+  'immersiveengineering:raw_silver',
+  'immersiveengineering:raw_nickel',
+  'immersiveengineering:raw_uranium'
+}
+
+--check whether n is ore's name
 function isOre(n)
   for _, oreName in pairs(oreList) do
     if n == oreName then
+      return true
+    end
+  end
+  return false
+end
+--check whether n is valuable
+function isValuable(n)
+  for _, itemName in pairs(valuableItemList) do
+    if n == itemName then
       return true
     end
   end
@@ -70,12 +98,29 @@ function dfsMine()
     end
   end
 end
---debug
-length = 64
-for _=1,length do
-  moveWhatever('north')
-  dfsMine()
+--clear backpack
+function clearBackpack()
+  for slot = 1, 16 do
+    local itemInfo = turtle.getItemDetail(slot)
+    if itemInfo ~= nil and not isValuable(itemInfo.name) then
+      turtle.select(slot)
+      turtle.drop(64)
+    end
+  end
 end
-for _=1,length do
-  moveWhatever('south')
+--debug
+loopTimes = 4
+length = 65
+for _ = 1, 4 do
+  for _ = 1, length do
+    moveWhatever('west')
+    dfsMine()
+  end
+  for _ = 1, length do
+    moveWhatever('east')
+  end
+  clearBackpack()
+  for _ = 1, 5 do
+    cturtle:move('north')
+  end
 end
