@@ -36,11 +36,11 @@ function dfsChop()
     end
   end
   for _, id in pairs(leaveId) do
+    local direction = cturtle._moveDirectionList[id]
     local hasBlock, blockInfo = cturtle:inspect(direction)
     if not (hasBlock and blockInfo.tags['minecraft:leaves']) then
       return
     end
-      local direction = cturtle._moveDirectionList[id]
     moveWhatever(direction)
     dfsChop()
     moveWhatever(cturtle:getOppositeDirection(direction))
