@@ -3,21 +3,21 @@ cturtle = {}
 cturtle._faceDirectionList = {'north', 'east', 'south', 'west'}
 --turtle faceDirection enum
 cturtle._faceDirectionEnum = {}
-cturtle._faceDirectionEnum['north'] = 0
-cturtle._faceDirectionEnum['east'] = 1
-cturtle._faceDirectionEnum['south'] = 2
-cturtle._faceDirectionEnum['west'] = 3
+cturtle._faceDirectionEnum['north'] = 1
+cturtle._faceDirectionEnum['east'] = 2
+cturtle._faceDirectionEnum['south'] = 3
+cturtle._faceDirectionEnum['west'] = 4
 
 --turtle moveDirection enum
 cturtle._moveDirectionList = {'north', 'east', 'south', 'west', 'up', 'down'}
 --turtle moveDirection enum
 cturtle._moveDirectionEnum = {}
-cturtle._moveDirectionEnum['north'] = vector.new(0, 0, -1)
-cturtle._moveDirectionEnum['east'] = vector.new(1, 0, 0)
-cturtle._moveDirectionEnum['south'] = vector.new(0, 0, 1)
-cturtle._moveDirectionEnum['west'] = vector.new(-1, 0, 0)
-cturtle._moveDirectionEnum['up'] = vector.new(0, 1, 0)
-cturtle._moveDirectionEnum['down'] = vector.new(0, -1, 0)
+cturtle._moveDirectionEnum['north'] = 1
+cturtle._moveDirectionEnum['east'] = 2
+cturtle._moveDirectionEnum['south'] = 3
+cturtle._moveDirectionEnum['west'] = 4
+cturtle._moveDirectionEnum['up'] = 5
+cturtle._moveDirectionEnum['down'] = 6
 --turtle oppositeDirection enum
 cturtle._oppositeDirection = {}
 cturtle._oppositeDirection['north'] = 'south'
@@ -26,10 +26,18 @@ cturtle._oppositeDirection['east'] = 'west'
 cturtle._oppositeDirection['west'] = 'east'
 cturtle._oppositeDirection['up'] = 'down'
 cturtle._oppositeDirection['down'] = 'up'
+--turtle moveDirectionVector
+cturtle._moveDirectionVector = {}
+cturtle._moveDirectionVector['north'] = vector.new(0, 0, -1)
+cturtle._moveDirectionVector['east'] = vector.new(1, 0, 0)
+cturtle._moveDirectionVector['south'] = vector.new(0, 0, 1)
+cturtle._moveDirectionVector['west'] = vector.new(-1, 0, 0)
+cturtle._moveDirectionVector['up'] = vector.new(0, 1, 0)
+cturtle._moveDirectionVector['down'] = vector.new(0, -1, 0)
 --turtle side enum
 cturtle._sideEnum = {}
-cturtle._sideEnum['left'] = 0
-cturtle._sideEnum['right'] = 1
+cturtle._sideEnum['left'] = 1
+cturtle._sideEnum['right'] = 2
 --turtle position var
 cturtle._position = vector.new(0, 0, 0)
 --turtle faceDirection var, 'north' as default
@@ -152,7 +160,7 @@ function cturtle:move(d)
   end
   local success, reason = moveFunc()
   if success then
-    cturtle:setPosition(cturtle._position + cturtle._moveDirectionEnum[d])
+    cturtle:setPosition(cturtle._position + cturtle._moveDirectionVector[d])
   end
   return success, reason 
 end
