@@ -36,6 +36,7 @@ function dfsChop()
     end
   end
   for _, id in pairs(leaveId) do
+    local direction = cturtle._moveDirectionList[id]
     moveWhatever(direction)
     dfsChop()
     moveWhatever(cturtle:getOppositeDirection(direction))
