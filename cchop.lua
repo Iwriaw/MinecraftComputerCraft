@@ -20,23 +20,25 @@ function moveWhatever(d)
 end
 --dfs chop
 function dfsChop()
+  local leaveId = {}
   for id = 1, 6 do
     local direction = cturtle._moveDirectionList[id]
     local hasBlock, blockInfo = cturtle:inspect(direction)
-    if hasBlock and (blockInfo.tags['minecraft:logs']) then
-      moveWhatever(direction)
-      dfsChop()
-      moveWhatever(cturtle:getOppositeDirection(direction))
+    if hasBlock then
+      if blockInfo.tags['minecraft:logs'] then
+        moveWhatever(direction)
+        dfsChop()
+        moveWhatever(cturtle:getOppositeDirection(direction))
+      end
+      if blockInfo.tags['minecraft:leaves'] then
+        table.insert(leaveId, id)
+      end
     end
   end
-  for id = 1, 6 do
-    local direction = cturtle._moveDirectionList[id]
-    local hasBlock, blockInfo = cturtle:inspect(direction)
-    if hasBlock and (blockInfo.tags['minecraft:leaves']) then
-      moveWhatever(direction)
-      dfsChop()
-      moveWhatever(cturtle:getOppositeDirection(direction))
-    end
+  for _, id in pairs(leaveId) do
+    moveWhatever(direction)
+    dfsChop()
+    moveWhatever(cturtle:getOppositeDirection(direction))
   end
 end
 --debug
