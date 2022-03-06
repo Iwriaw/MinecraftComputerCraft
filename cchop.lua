@@ -23,7 +23,7 @@ function dfsChop()
   local leaveId = {}
   local directionId = cturtle._moveDirectionEnum[cturtle._faceDirection]
   for i = 1, 6 do
-    local id = (i - 1 + direction) % 6 + 1
+    local id = (i - 1 + directionId) % 6 + 1
     local direction = cturtle._moveDirectionList[id]
     local hasBlock, blockInfo = cturtle:inspect(direction)
     if hasBlock then
