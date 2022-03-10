@@ -73,30 +73,17 @@ function isValuable(n)
   end
   return false
 end
---move whatever
-function moveWhatever(d)
-  local success = false
-  local reason
-  while (not success) do
-    success, reason = cturtle:move(d)
-    if not success then
-      if reason == 'Movement obstructed' then
-        cturtle:dig(d)
-      end
-    end
-  end
-end
 --dfs mine
 function dfsMine()
-  local directionId = cturtle._moveDirectionEnum[cturtle._faceDirection]
+  local directionId = cturtle.moveDirectionEnum[cturtle.faceDirection]
   for i = 1, 6 do
     local id = (i - 2 + directionId) % 6 + 1
-    local direction = cturtle._moveDirectionList[id]
+    local direction = cturtle.moveDirectionList[id]
     local hasBlock, blockInfo = cturtle:inspect(direction)
     if hasBlock and isOre(blockInfo.name) then
-      moveWhatever(direction)
+      cturtle:forcedMove(direction)
       dfsMine()
-      moveWhatever(cturtle:getOppositeDirection(direction))
+      cturtle:forcedMove(cturtle:getOppositeDirection(direction))
     end
   end
 end
@@ -115,11 +102,11 @@ loopTimes = 4
 length = 65
 for _ = 1, 4 do
   for _ = 1, length do
-    moveWhatever('west')
+    forcedMove('west')
     dfsMine()
   end
   for _ = 1, length do
-    moveWhatever('east')
+    forcedMove('east')
   end
   clearBackpack()
   for _ = 1, 5 do
