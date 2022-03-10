@@ -11,7 +11,7 @@ while true do
     vector.new(-36, 65, 112),
     vector.new(-46, 65, 94)
   )
-  cturtle:forcedMoveTo(
+  cturtle:forceMoveTo(
     vector.new(-36, 65, 103)
   )
   os.sleep(1200)
