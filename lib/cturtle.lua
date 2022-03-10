@@ -275,7 +275,6 @@ function cturtle:forceTraverse(fromV, toV)
   visit[tostring(cturtle.position)] = true
   local finish = false
   while not finish do
-    print(cturtle.position)
     finish = true
     for _, direction in pairs(moveDirectionList) do
       local nextPosition = cturtle.position + cturtle.moveDirectionVector[direction]
