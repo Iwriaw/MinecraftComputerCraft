@@ -11,5 +11,14 @@ cturtle.position = position
 faceDirection, reason = cturtle:getFaceDirectionByGps()
 assert(faceDirection ~= nil, reason)
 cturtle.faceDirection = faceDirection
-print(cturtle.position)
-print(cturtle.faceDirection)
+--debug
+while true do
+  cturtle:forceTraverse(
+    vector.new(-36, 65, 112),
+    vector.new(-46, 65, 94)
+  )
+  cturtle:forceMoveTo(
+    vector.new(-36, 65, 103)
+  )
+  os.sleep(1200)
+end
