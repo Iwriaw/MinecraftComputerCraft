@@ -106,13 +106,13 @@ function cturtle:getPositionByGps()
 end
 --get face direction by gps
 function cturtle:getFaceDirectionByGps()
-  local nowPosition = getPositionByGps()
+  local nowPosition = cturtle:getPositionByGps()
   if nowPosition == nil then
     return nil, 'fail to get position by gps'
   end
   for _, direction in pairs(cturtle.faceDirectionList) do
     if cturtle:move(direction) then
-      local newPosition = getPositionByGps()
+      local newPosition = cturtle:getPositionByGps()
       if newPosition == nil then
         return nil, 'fail to get position by gps'
       end
