@@ -48,6 +48,8 @@ valuableItemList = {
   'minecraft:redstone',
   'minecraft:lapis_lazuli',
   'minecraft:quartz',
+  'minecraft:gold_nugget',
+  'minecraft:ancient_debris',
   'immersiveengineering:raw_aluninum',
   'immersiveengineering:raw_lead',
   'immersiveengineering:raw_silver',
@@ -81,9 +83,9 @@ function dfsMine()
     local direction = cturtle.moveDirectionList[id]
     local hasBlock, blockInfo = cturtle:inspect(direction)
     if hasBlock and isOre(blockInfo.name) then
-      cturtle:forcedMove(direction)
+      cturtle:forceMove(direction)
       dfsMine()
-      cturtle:forcedMove(cturtle:getOppositeDirection(direction))
+      cturtle:forceMove(cturtle:getOppositeDirection(direction))
     end
   end
 end
@@ -102,11 +104,11 @@ loopTimes = 4
 length = 65
 for _ = 1, 4 do
   for _ = 1, length do
-    forcedMove('west')
+    forceMove('west')
     dfsMine()
   end
   for _ = 1, length do
-    forcedMove('east')
+    forceMove('east')
   end
   clearBackpack()
   for _ = 1, 5 do

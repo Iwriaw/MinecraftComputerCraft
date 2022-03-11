@@ -16,9 +16,9 @@ function dfsChop()
     local hasBlock, blockInfo = cturtle:inspect(direction)
     if hasBlock then
       if blockInfo.tags['minecraft:logs'] then
-        cturtle:forcedMove(direction)
+        cturtle:forceMove(direction)
         dfsChop()
-        cturtle:forcedMove(cturtle:getOppositeDirection(direction))
+        cturtle:forceMove(cturtle:getOppositeDirection(direction))
       end
       if blockInfo.tags['minecraft:leaves'] then
         table.insert(leaveId, id)
@@ -31,9 +31,9 @@ function dfsChop()
     if not (hasBlock and blockInfo.tags['minecraft:leaves']) then
       return
     end
-    cturtle:forcedMove(direction)
+    cturtle:forceMove(direction)
     dfsChop()
-    cturtle:forcedMove(cturtle:getOppositeDirection(direction))
+    cturtle:forceMove(cturtle:getOppositeDirection(direction))
   end
 end
 --debug
