@@ -104,11 +104,11 @@ loopTimes = 4
 length = 65
 for _ = 1, 4 do
   for _ = 1, length do
-    forceMove('west')
+    cturtle:forceMove('west')
     dfsMine()
   end
   for _ = 1, length do
-    forceMove('east')
+    cturtle:forceMove('east')
   end
   clearBackpack()
   for _ = 1, 5 do
