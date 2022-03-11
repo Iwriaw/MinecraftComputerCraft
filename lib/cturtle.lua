@@ -118,11 +118,11 @@ function cturtle:getFaceDirectionByGps()
       end
       local diffPosition = newPosition - nowPosition
       local faceDirection = cturtle:vectorToDirection(diffPosition)
-      cturtle:move(cturtle:getOppositeDirection(faceDirection))
+      cturtle:move(cturtle:getOppositeDirection(direction))
       return cturtle:getOppositeDirection(faceDirection)
     end
-    return nil, "don't have space to move"
   end
+  return nil, "don't have space to move"
 end
 --set turtle position
 function cturtle:setPosition(v)
