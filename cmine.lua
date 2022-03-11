@@ -77,10 +77,10 @@ function isValuable(n)
 end
 --dfs mine
 function dfsMine()
-  local directionId = cturtle.moveDirectionEnum[cturtle.faceDirection]
+  local directionId = cturtle.directionEnum[cturtle.faceDirection]
   for i = 1, 6 do
     local id = (i - 2 + directionId) % 6 + 1
-    local direction = cturtle.moveDirectionList[id]
+    local direction = cturtle.directionList[id]
     local hasBlock, blockInfo = cturtle:inspect(direction)
     if hasBlock and isOre(blockInfo.name) then
       cturtle:forceMove(direction)
@@ -112,6 +112,6 @@ for _ = 1, 4 do
   end
   clearBackpack()
   for _ = 1, 5 do
-    cturtle:move('north')
+    cturtle:forceMove('north')
   end
 end

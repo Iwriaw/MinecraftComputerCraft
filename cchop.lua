@@ -9,10 +9,10 @@ dofile(path..'/lib/cturtle.lua')
 --dfs chop
 function dfsChop()
   local leaveId = {}
-  local directionId = cturtle.moveDirectionEnum[cturtle.faceDirection]
+  local directionId = cturtle.directionEnum[cturtle.faceDirection]
   for i = 1, 6 do
     local id = (i - 2 + directionId) % 6 + 1
-    local direction = cturtle.moveDirectionList[id]
+    local direction = cturtle.directionList[id]
     local hasBlock, blockInfo = cturtle:inspect(direction)
     if hasBlock then
       if blockInfo.tags['minecraft:logs'] then
@@ -26,7 +26,7 @@ function dfsChop()
     end
   end
   for _, id in pairs(leaveId) do
-    local direction = cturtle.moveDirectionList[id]
+    local direction = cturtle.directionList[id]
     local hasBlock, blockInfo = cturtle:inspect(direction)
     if not (hasBlock and blockInfo.tags['minecraft:leaves']) then
       return

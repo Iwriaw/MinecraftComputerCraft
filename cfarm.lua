@@ -5,7 +5,14 @@ assert(fs.exists(path..'/lib/cturtle.lua'),
   'require ./lib/cturtle.lua'
 )
 dofile(path..'/lib/cturtle.lua')
-
+position = cturtle:getPositionByGps()
+if position ~= nil then
+  cturtle.position = position
+end
+faceDirection = cturtle:getFaceDirectionByGps()
+if faceDirection ~= nil then
+  cturtle.faceDirection = faceDirection
+end
 while true do
   cturtle:forceTraverse(
     vector.new(-36, 65, 112),
