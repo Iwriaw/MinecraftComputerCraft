@@ -85,7 +85,7 @@ function dfsMine()
     if hasBlock and isOre(blockInfo.name) then
       cturtle:forceMove(direction)
       dfsMine()
-      cturtle:forceMove(cturtle:getOppositeDirection(direction))
+      cturtle:forceMove(cturtle.oppositeDirection[direction])
     end
   end
 end
