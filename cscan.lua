@@ -7,9 +7,7 @@ assert(fs.exists(path..'/lib/cturtle.lua'),
 dofile(path..'/lib/cturtle.lua')
 
 cturtle.faceDirection = 'east'
-file = io.open('test.blueprint', 'r')
-blueprint = textutils.unserialize(file:read('*a'))
-file:close()
+local blueprint = {}
 function scan(nowPosition, nextPosition, direction)
   local exist, info = cturtle:inspect(direction)
   if exist then
@@ -23,7 +21,10 @@ end
 cuboid = vector.new(3,3,3)
 cturtle:traverse(
   vector.new(1, 0, 0),
-  vector.new(1, 0, 0) + cuboid - vector.new(-1, -1, -1),
+  vector.new(0, -1, -1) + cuboid,
   scan
 )
 
+file = io.open('test.blueprint', 'w')
+file:write(textutils.serialize(blueprint))
+file:close()

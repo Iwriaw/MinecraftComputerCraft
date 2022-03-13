@@ -213,7 +213,6 @@ function cturtle:moveTo(v, func)
       local nextPosition = cturtle.position + cturtle.directionVector[direction]
       local nextDistance = cturtle:getVectorDistance(nextPosition, v)
       if nextDistance < distance then
-        cturtle:face(direction)
         func(cturtle.position, nextPosition, direction)
         success, reason = cturtle:move(direction)
         if not success then
@@ -325,7 +324,6 @@ function cturtle:traverse(fromV, toV, func)
     for _, direction in pairs(directionList) do
       local nextPosition = cturtle.position + cturtle.directionVector[direction]
       if visit[tostring(nextPosition)] == nil and cturtle:inRange(fromV, toV, nextPosition) then
-        cturtle:face(direction)
         func(cturtle.position, nextPosition, direction)
         success, reason = cturtle:move(direction)
         if not success then
@@ -502,4 +500,44 @@ function cturtle:select(name)
     end
   end
   return false
+end
+-- clone lua table
+function cturtle:tableClone(t)
+  assert(type(t) == 'table',
+    'parameter 1 must be table'
+  )
+  local newT = {}
+  for k, v in pairs(t) do
+    if type(v) == 'table' then
+      newT[k] = cturtle:tableClone(v)
+    else
+      newT[k] = v
+    end
+  end
+  return newT
+end
+-- compare two lua table
+function cturtle:tableCompare(t1, t2)
+  assert(type(t1) == 'table',
+    'parameter 1 must be table'
+  )
+  assert(type(t2) == 'table',
+    'parameter 2 must be table'
+  )
+  local equal = true
+  for k, v in pairs(t1) do
+    if type(t1[k]) ~= type(t2[k]) then
+      equal = false
+    end
+    if type(t1[k]) == 'table' then 
+      if not cturtle:tableCompare(t1[k], t2[k]) then
+        equal = false
+      end
+    else
+      if t1[k] ~= t2[k] then
+        equal = false
+      end
+    end
+  end
+  return equal
 end
