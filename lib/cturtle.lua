@@ -337,6 +337,7 @@ function cturtle:traverse(fromV, toV, func)
       end
     end
   end
+  return true
 end
 --turtle place
 function cturtle:place(d, s)
