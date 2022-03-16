@@ -81,11 +81,11 @@ function dfsMine()
   for i = 1, 6 do
     local id = (i - 2 + directionId) % 6 + 1
     local direction = cturtle.directionList[id]
-    local hasBlock, blockInfo = cturtle:inspect(direction)
+    local hasBlock, blockInfo = cturtle.inspect(direction)
     if hasBlock and isOre(blockInfo.name) then
-      cturtle:forceMove(direction)
+      cturtle.forceMove(direction)
       dfsMine()
-      cturtle:forceMove(cturtle.oppositeDirection[direction])
+      cturtle.forceMove(cturtle.oppositeDirection[direction])
     end
   end
 end
@@ -104,16 +104,16 @@ loopTimes = 16
 length = 65
 for _ = 1, loopTimes do
   for _ = 1, length do
-    cturtle:forceMove('west')
+    cturtle.forceMove('west')
     dfsMine()
   end
   for _ = 1, length do
-    cturtle:forceMove('east')
+    cturtle.forceMove('east')
   end
   clearBackpack()
   for _ = 1, 5 do
-    cturtle:forceMove('north')
-    cturtle:dig('up')
-    cturtle:dig('down')
+    cturtle.forceMove('north')
+    cturtle.dig('up')
+    cturtle.dig('down')
   end
 end

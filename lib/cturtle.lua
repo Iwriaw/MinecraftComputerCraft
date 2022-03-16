@@ -42,7 +42,7 @@ cturtle.position = vector.new()
 --turtle faceDirection var, 'north' as default
 cturtle.faceDirection = 'north'
 --check whether val is vector
-function cturtle:isVector(v)
+function cturtle.isVector(v)
   if type(v) == 'table' and
     type(v.x) == 'number' and
     type(v.y) == 'number' and
@@ -53,7 +53,7 @@ function cturtle:isVector(v)
   return false
 end
 --check whether val is direction
-function cturtle:isDirection(d)
+function cturtle.isDirection(d)
   if type(d) == 'string' and
     cturtle.directionEnum[d] ~= nil
   then
@@ -62,7 +62,7 @@ function cturtle:isDirection(d)
   return false
 end
 --check whether val is faceDirection
-function cturtle:isFaceDirection(d)
+function cturtle.isFaceDirection(d)
   if type(d) == 'string' and
     cturtle.faceDirectionEnum[d] ~= nil
   then
@@ -71,7 +71,7 @@ function cturtle:isFaceDirection(d)
   return false
 end
 --check whether val is side
-function cturtle:isSide(s)
+function cturtle.isSide(s)
   if type(s) == 'string' and
     cturtle.sideEnum[s] ~= nil
   then
@@ -80,11 +80,11 @@ function cturtle:isSide(s)
   return false
 end
 --get vector distance
-function cturtle:getVectorDistance(v1, v2)
-  assert(cturtle:isVector(v1),
+function cturtle.getVectorDistance(v1, v2)
+  assert(cturtle.isVector(v1),
     'parameter 1 must be vector'
   )
-  assert(v2 == nil or cturtle:isVector(v2),
+  assert(v2 == nil or cturtle.isVector(v2),
     'parameter 2 must be nil or vector'
   )
   if v2 == nil then
@@ -94,16 +94,16 @@ function cturtle:getVectorDistance(v1, v2)
   return math.abs(diffVector.x) + math.abs(diffVector.y) + math.abs(diffVector.z)
 end
 --vector to direction
-function cturtle:vectorToDirection(v)
+function cturtle.vectorToDirection(v)
   for direction, vector in pairs(cturtle.directionVector) do
-    if vector:equals(v) then
+    if vector.equals(v) then
       return direction
     end
   end
   return nil, "can't find corresponding face direction"
 end
 --get turtle position by gps
-function cturtle:getPositionByGps()
+function cturtle.getPositionByGps()
   local x, y, z = gps.locate()
   if x == nil then
     return nil, 'fail to get position by gps'
@@ -111,42 +111,42 @@ function cturtle:getPositionByGps()
   return vector.new(x, y, z)
 end
 --get face direction by gps
-function cturtle:getFaceDirectionByGps()
-  local nowPosition = cturtle:getPositionByGps()
+function cturtle.getFaceDirectionByGps()
+  local nowPosition = cturtle.getPositionByGps()
   if nowPosition == nil then
     return nil, 'fail to get position by gps'
   end
   for _, direction in pairs(cturtle.faceDirectionList) do
-    if cturtle:move(direction) then
-      local newPosition = cturtle:getPositionByGps()
+    if cturtle.move(direction) then
+      local newPosition = cturtle.getPositionByGps()
       if newPosition == nil then
         return nil, 'fail to get position by gps'
       end
       local diffPosition = newPosition - nowPosition
-      local faceDirection = cturtle:vectorToDirection(diffPosition)
-      cturtle:move(cturtle.oppositeDirection[direction])
+      local faceDirection = cturtle.vectorToDirection(diffPosition)
+      cturtle.move(cturtle.oppositeDirection[direction])
       return cturtle.oppositeDirection[faceDirection]
     end
   end
   return nil, "don't have space to move"
 end
 --set turtle position
-function cturtle:setPosition(v)
-  assert(cturtle:isVector(v),
+function cturtle.setPosition(v)
+  assert(cturtle.isVector(v),
     'parameter 1 must be vector'
   )
   cturtle.position = v
 end
 --set turtle faceDirection
-function cturtle:setFaceDirection(d)
-  assert(cturtle:isFaceDirection(d),
+function cturtle.setFaceDirection(d)
+  assert(cturtle.isFaceDirection(d),
     'parameter 1 must be faceDirection string'
   )
   cturtle.faceDirection = d
 end
 --turtle face
-function cturtle:face(d)
-  assert(cturtle:isFaceDirection(d),
+function cturtle.face(d)
+  assert(cturtle.isFaceDirection(d),
     'parameter 1 must be faceDirection string'
   )
   local fromFaceDirectionId = cturtle.faceDirectionEnum[cturtle.faceDirection]
@@ -171,13 +171,13 @@ function cturtle:face(d)
   cturtle.faceDirection = d
 end
 --turtle move
-function cturtle:move(d)
-  assert(cturtle:isDirection(d),
+function cturtle.move(d)
+  assert(cturtle.isDirection(d),
     'parameter 1 must be direction string'
   )
   local moveFunc
-  if cturtle:isFaceDirection(d) then
-    cturtle:face(d)
+  if cturtle.isFaceDirection(d) then
+    cturtle.face(d)
     moveFunc = turtle.forward
   end
   if d == 'up' then
@@ -188,13 +188,13 @@ function cturtle:move(d)
   end
   local success, reason = moveFunc()
   if success then
-    cturtle:setPosition(cturtle.position + cturtle.directionVector[d])
+    cturtle.setPosition(cturtle.position + cturtle.directionVector[d])
   end
   return success, reason 
 end
 --force move to dest position
-function cturtle:moveTo(v, func)
-  assert(cturtle:isVector(v),
+function cturtle.moveTo(v, func)
+  assert(cturtle.isVector(v),
     'parameter 1 must be vector'
   )
   assert(func == nil or type(func) == 'function',
@@ -204,17 +204,17 @@ function cturtle:moveTo(v, func)
     func = function() end
   end
   local fuelLevel = turtle.getFuelLevel()
-  local distance = cturtle:getVectorDistance(cturtle.position, v)
+  local distance = cturtle.getVectorDistance(cturtle.position, v)
   if fuelLevel ~= 'unlimited' and fuelLevel < distance then
     return false, "don't have enough fuel to move"
   end
   while distance > 0 do
     for _, direction in pairs(cturtle.directionList) do
       local nextPosition = cturtle.position + cturtle.directionVector[direction]
-      local nextDistance = cturtle:getVectorDistance(nextPosition, v)
+      local nextDistance = cturtle.getVectorDistance(nextPosition, v)
       if nextDistance < distance then
         func(cturtle.position, nextPosition, direction)
-        success, reason = cturtle:move(direction)
+        success, reason = cturtle.move(direction)
         if not success then
           return success, reason
         end
@@ -225,16 +225,16 @@ function cturtle:moveTo(v, func)
   return true
 end
 --turtle dig
-function cturtle:dig(d, s)
-  assert(cturtle:isDirection(d),
+function cturtle.dig(d, s)
+  assert(cturtle.isDirection(d),
     'parameter 1 must be direction string'
   )
-  assert(s == nil or cturtle:isSide(s),
+  assert(s == nil or cturtle.isSide(s),
   'parameter 2 must be nil or side string'
   )
   local digFunc
-  if cturtle:isFaceDirection(d) then
-    cturtle:face(d)
+  if cturtle.isFaceDirection(d) then
+    cturtle.face(d)
     digFunc = turtle.dig
   end
   if d == 'up' then
@@ -247,17 +247,17 @@ function cturtle:dig(d, s)
   return success, reason 
 end
 --dig... and move = force move
-function cturtle:forceMove(d)
-  assert(cturtle:isDirection(d),
+function cturtle.forceMove(d)
+  assert(cturtle.isDirection(d),
     'parameter 1 must be direction string'
   )
   local success = false
   local reason
   while not success do
-    success, reason = cturtle:move(d)
+    success, reason = cturtle.move(d)
     if not success then
       if reason == 'Movement obstructed' then
-        cturtle:dig(d)
+        cturtle.dig(d)
       else
         return success, reason
       end
@@ -265,14 +265,14 @@ function cturtle:forceMove(d)
   end
   return success
 end
-function cturtle:inRange(fromV, toV, v)
-  assert(cturtle:isVector(fromV),
+function cturtle.inRange(fromV, toV, v)
+  assert(cturtle.isVector(fromV),
     'parameter 1 must be vector'
   )
-  assert(cturtle:isVector(toV),
+  assert(cturtle.isVector(toV),
     'parameter 2 must be vector'
   )
-  assert(cturtle:isVector(v),
+  assert(cturtle.isVector(v),
     'parameter 3 must be vector'
   )
   local minV = vector.new(
@@ -294,11 +294,11 @@ function cturtle:inRange(fromV, toV, v)
   return false
 end
 --traverse the cuboid
-function cturtle:traverse(fromV, toV, func)
-  assert(cturtle:isVector(fromV),
+function cturtle.traverse(fromV, toV, func)
+  assert(cturtle.isVector(fromV),
     'parameter 1 must be vector'
   )
-  assert(cturtle:isVector(toV),
+  assert(cturtle.isVector(toV),
     'parameter 2 must be vector'
   )
   assert(func == nil or type(func) == 'function',
@@ -309,23 +309,23 @@ function cturtle:traverse(fromV, toV, func)
   end
   local fuelLevel = turtle.getFuelLevel()
   local diffVector = toV - fromV
-  local distance = cturtle:getVectorDistance(cturtle.position, fromV)
+  local distance = cturtle.getVectorDistance(cturtle.position, fromV)
   distance = distance + math.abs(diffVector.x * diffVector.y * diffVector.z) - 1
   if fuelLevel ~= 'unlimited' and fuelLevel < distance then
     return false, "don't have enough fuel to move"
   end
   local directionList = {'east', 'west', 'south', 'north', 'up', 'down'}
   local visit = {}
-  cturtle:moveTo(fromV, func)
+  cturtle.moveTo(fromV, func)
   visit[tostring(cturtle.position)] = true
   local finish = false
   while not finish do
     finish = true
     for _, direction in pairs(directionList) do
       local nextPosition = cturtle.position + cturtle.directionVector[direction]
-      if visit[tostring(nextPosition)] == nil and cturtle:inRange(fromV, toV, nextPosition) then
+      if visit[tostring(nextPosition)] == nil and cturtle.inRange(fromV, toV, nextPosition) then
         func(cturtle.position, nextPosition, direction)
-        success, reason = cturtle:move(direction)
+        success, reason = cturtle.move(direction)
         if not success then
           return success, reason
         end
@@ -338,16 +338,16 @@ function cturtle:traverse(fromV, toV, func)
   return true
 end
 --turtle place
-function cturtle:place(d, s)
-  assert(cturtle:isDirection(d),
+function cturtle.place(d, s)
+  assert(cturtle.isDirection(d),
     'parameter 1 must be direction string'
   )
   assert(s == nil or type(s) == 'string',
     'parameter 2 must be nil or string'
   )
   local placeFunc
-  if cturtle:isFaceDirection(d) then
-    cturtle:face(d)
+  if cturtle.isFaceDirection(d) then
+    cturtle.face(d)
     placeFunc = turtle.place
   end
   if d == 'up' then
@@ -360,16 +360,16 @@ function cturtle:place(d, s)
   return success, reason 
 end
 --turtle drop
-function cturtle:drop(d, c)
-  assert(cturtle:isDirection(d),
+function cturtle.drop(d, c)
+  assert(cturtle.isDirection(d),
     'parameter 1 must be direction string'
   )
   assert(0 <= c and c <= 64,
     'parameter 2 must between [0, 64]'
   )
   local dropFunc
-  if cturtle:isFaceDirection(d) then
-    cturtle:face(d)
+  if cturtle.isFaceDirection(d) then
+    cturtle.face(d)
     dropFunc = turtle.drop
   end
   if d == 'up' then
@@ -382,13 +382,13 @@ function cturtle:drop(d, c)
   return success, reason
 end
 --turtle detect
-function cturtle:detect(d)
-  assert(cturtle:isDirection(d),
+function cturtle.detect(d)
+  assert(cturtle.isDirection(d),
     'parameter 1 must be direction string'
   )
   local detectFunc
-  if cturtle:isFaceDirection(d) then
-    cturtle:face(d)
+  if cturtle.isFaceDirection(d) then
+    cturtle.face(d)
     detectFunc = turtle.detect
   end
   if d == 'up' then
@@ -401,13 +401,13 @@ function cturtle:detect(d)
   return success, reason
 end
 --turtle compare
-function cturtle:compare(d)
-  assert(cturtle:isDirection(d),
+function cturtle.compare(d)
+  assert(cturtle.isDirection(d),
     'parameter 1 must be direction string'
   )
   local compareFunc
-  if cturtle:isFaceDirection(d) then
-    cturtle:face(d)
+  if cturtle.isFaceDirection(d) then
+    cturtle.face(d)
     compareFunc = turtle.compare
   end
   if d == 'up' then
@@ -420,16 +420,16 @@ function cturtle:compare(d)
   return success, reason
 end
 --turtle attack
-function cturtle:attack(d, s)
-  assert(cturtle:isDirection(d),
+function cturtle.attack(d, s)
+  assert(cturtle.isDirection(d),
     'parameter 1 must be direction string'
   )
-  assert(s == nil or cturtle:isSide(s),
+  assert(s == nil or cturtle.isSide(s),
   'parameter 2 must be nil or side string'
   )
   local attackFunc
-  if cturtle:isFaceDirection(d) then
-    cturtle:face(d)
+  if cturtle.isFaceDirection(d) then
+    cturtle.face(d)
     attackFunc = turtle.attack
   end
   if d == 'up' then
@@ -442,16 +442,16 @@ function cturtle:attack(d, s)
   return success, reason 
 end
 --turtle suck
-function cturtle:suck(d, c)
-  assert(cturtle:isDirection(d),
+function cturtle.suck(d, c)
+  assert(cturtle.isDirection(d),
     'parameter 1 must be direction string'
   )
   assert(0 <= c and c <= 64,
     'parameter 2 must between [0, 64]'
   )
   local suckFunc
-  if cturtle:isFaceDirection(d) then
-    cturtle:face(d)
+  if cturtle.isFaceDirection(d) then
+    cturtle.face(d)
     suckFunc = turtle.suck
   end
   if d == 'up' then
@@ -464,13 +464,13 @@ function cturtle:suck(d, c)
   return success, reason
 end
 --turtle inspect
-function cturtle:inspect(d)
-  assert(cturtle:isDirection(d),
+function cturtle.inspect(d)
+  assert(cturtle.isDirection(d),
     'parameter 1 must be direction string'
   )
   local inspectFunc
-  if cturtle:isFaceDirection(d) then
-    cturtle:face(d)
+  if cturtle.isFaceDirection(d) then
+    cturtle.face(d)
     inspectFunc = turtle.inspect
   end
   if d == 'up' then
@@ -483,7 +483,7 @@ function cturtle:inspect(d)
   return success, reason
 end
 --get turtle inventory item list
-function cturtle:getItemList()
+function cturtle.getItemList()
   local itemList = {}
     for slot = 1, 16 do
       itemList[slot] = turtle.getItemDetail(slot)
@@ -491,8 +491,8 @@ function cturtle:getItemList()
   return itemList
 end
 --select specific item
-function cturtle:select(name)
-  local itemList = cturtle:getItemList()
+function cturtle.select(name)
+  local itemList = cturtle.getItemList()
   for slot, item in pairs(itemList) do
     if item.name == name then
       turtle.select(slot)
@@ -502,14 +502,14 @@ function cturtle:select(name)
   return false
 end
 -- clone lua table
-function cturtle:tableClone(t)
+function cturtle.tableClone(t)
   assert(type(t) == 'table',
     'parameter 1 must be table'
   )
   local newT = {}
   for k, v in pairs(t) do
     if type(v) == 'table' then
-      newT[k] = cturtle:tableClone(v)
+      newT[k] = cturtle.tableClone(v)
     else
       newT[k] = v
     end
@@ -517,7 +517,7 @@ function cturtle:tableClone(t)
   return newT
 end
 -- compare two lua table
-function cturtle:tableCompare(t1, t2)
+function cturtle.tableCompare(t1, t2)
   assert(type(t1) == 'table',
     'parameter 1 must be table'
   )
@@ -530,7 +530,7 @@ function cturtle:tableCompare(t1, t2)
       equal = false
     end
     if type(t1[k]) == 'table' then 
-      if not cturtle:tableCompare(t1[k], t2[k]) then
+      if not cturtle.tableCompare(t1[k], t2[k]) then
         equal = false
       end
     else

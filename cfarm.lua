@@ -5,23 +5,23 @@ assert(fs.exists(path..'/lib/cturtle.lua'),
   'require ./lib/cturtle.lua'
 )
 dofile(path..'/lib/cturtle.lua')
-position,reason = cturtle:getPositionByGps()
+position,reason = cturtle.getPositionByGps()
 assert(position ~= nil, reason)
 cturtle.position = position
-faceDirection, reason = cturtle:getFaceDirectionByGps()
+faceDirection, reason = cturtle.getFaceDirectionByGps()
 assert(faceDirection ~= nil, reason)
 cturtle.faceDirection = faceDirection
 --debug
 function dig(nowPosition, nextPosition, direction)
-  cturtle:dig(direction)
+  cturtle.dig(direction)
 end
 while true do
-  cturtle:traverse(
+  cturtle.traverse(
     vector.new(-36, 65, 112),
     vector.new(-46, 65, 94),
     dig
   )
-  cturtle:moveTo(
+  cturtle.moveTo(
     vector.new(-36, 65, 103),
     dig
   )
