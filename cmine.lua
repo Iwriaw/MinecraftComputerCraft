@@ -100,9 +100,9 @@ function clearBackpack()
   end
 end
 --debug
-loopTimes = 4
+loopTimes = 16
 length = 65
-for _ = 1, 4 do
+for _ = 1, loopTimes do
   for _ = 1, length do
     cturtle:forceMove('west')
     dfsMine()
@@ -113,5 +113,7 @@ for _ = 1, 4 do
   clearBackpack()
   for _ = 1, 5 do
     cturtle:forceMove('north')
+    cturtle:dig('up')
+    cturtle:dig('down')
   end
 end
