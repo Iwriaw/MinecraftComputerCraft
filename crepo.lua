@@ -20,7 +20,9 @@ function crepo.init()
     local name = peripheral.getName(inventory)
     crepo.inventoryMap[name] = inventory
   end
-  crepo.inputInventory = crepo.inventoryMap['left']
+  local inputName = 'immersiveengineer:woodencrate_66'
+  local outputName = 'immersiveengineer:woodencrate_67'
+  crepo.inputInventory = crepo.inventoryMap['']
   crepo.outputInventory = crepo.inventoryMap['right']
   crepo.inventoryMap['left'] = nil
   crepo.inventoryMap['right'] = nil
@@ -79,6 +81,13 @@ function crepo.layIn()
         lastSlot = slots[#slots]
       end
       local layInCount = crepo.inputInventory.pushItems(lastSlot.inventoryName, slot, count, lastSlot.slot)
+      if layInCount == 0 then
+        if emptySlot == nil then
+          break
+        end
+        table.insert(slots, emptySlot)
+        lastSlot = slots[#slots]
+      end
       print(name, '*', layInCount, ' to ', lastSlot.inventoryName, "'s ", lastSlot.slot, 'slot.')
       lastSlot.count = lastSlot.count + layInCount
       crepo.itemMap[name].count = crepo.itemMap[name].count + layInCount
