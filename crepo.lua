@@ -24,7 +24,7 @@ function crepo.init()
   crepo.outputInventory = crepo.inventoryMap['right']
   crepo.inventoryMap['left'] = nil
   crepo.inventoryMap['right'] = nil
-  crepo.itemMap = crepo.loadItemMapData()
+  crepo.loadItemMapData()
   for name, inventory in pairs(crepo.inventoryMap) do
     local itemList = inventory.list()
     for slot, itemInfo in pairs(itemList) do
