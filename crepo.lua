@@ -20,8 +20,8 @@ function crepo.init()
     local name = peripheral.getName(inventory)
     crepo.inventoryMap[name] = inventory
   end
-  local inputName = 'immersiveengineer:woodencrate_66'
-  local outputName = 'immersiveengineer:woodencrate_67'
+  local inputName = 'immersiveengineering:woodencrate_66'
+  local outputName = 'immersiveengineering:woodencrate_67'
   crepo.inputInventory = crepo.inventoryMap['']
   crepo.outputInventory = crepo.inventoryMap['right']
   crepo.inventoryMap['left'] = nil
