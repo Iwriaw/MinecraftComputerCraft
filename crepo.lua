@@ -22,10 +22,10 @@ function crepo.init()
   end
   local inputName = 'immersiveengineering:woodencrate_66'
   local outputName = 'immersiveengineering:woodencrate_67'
-  crepo.inputInventory = crepo.inventoryMap['']
-  crepo.outputInventory = crepo.inventoryMap['right']
-  crepo.inventoryMap['left'] = nil
-  crepo.inventoryMap['right'] = nil
+  crepo.inputInventory = crepo.inventoryMap[inputName]
+  crepo.outputInventory = crepo.inventoryMap[outputName]
+  crepo.inventoryMap[inputName] = nil
+  crepo.inventoryMap[outputName] = nil
   crepo.loadItemMapData()
   for name, inventory in pairs(crepo.inventoryMap) do
     local itemList = inventory.list()
