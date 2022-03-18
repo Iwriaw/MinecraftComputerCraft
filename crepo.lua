@@ -91,10 +91,10 @@ function crepo.layIn()
         if name == nil then
           goto NextLayInSlot
         end
-        if crepo.itemMap[name].notFull[name] == nil then
-          crepo.itemMap[name].notFull[name] = {}
+        if crepo.itemMap[itemName].notFull[name] == nil then
+          crepo.itemMap[itemName].notFull[name] = {}
         end
-        crepo.itemMap[name].notFull[name][slot] = 0
+        crepo.itemMap[itemName].notFull[name][slot] = 0
       end
       --traverse all not full slot and put items in
       for toName, toSlots in pairs(crepo.itemMap[itemName].notFull) do
