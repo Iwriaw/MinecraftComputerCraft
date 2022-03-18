@@ -116,17 +116,15 @@ function crepo.layIn()
             end
             crepo.itemMap[itemName].full[toName][toSlot] = toSlots[toSlot]
             toSlots[toSlot] = nil
+            if crepo.getTableSize(toSlots) == 0 then
+              crepo.itemMap[itemName].notFull[toName] = nil
+            end
           end
         end
       end
     end
-    --clear empty table
-    for inventoryName, slots in pairs(crepo.itemMap[itemName].notFull) do
-      if crepo.getTableSize(slots) == 0 then
-        crepo.itemMap[itemName].notFull[inventoryName] = nil
-      end
-    end
   end
+  crepo.saveItemMap()
 end
 --take out items from repository
 function crepo.takeOut(itemName, itemCount)
@@ -147,6 +145,9 @@ function crepo.takeOut(itemName, itemCount)
           end
           crepo.itemMap[itemName].notFull[name][slot] = count
           crepo.itemMap[itemName].full[name][slot] = nil
+          if crepo.getTableSize(crepo.itemMap[itemName].full[name]) == 0 then
+            crepo.itemMap[itemName].full[name] = nil
+          end
           break
         end
         break
@@ -166,21 +167,14 @@ function crepo.takeOut(itemName, itemCount)
         fromSlots[fromSlot] = fromSlots[fromSlot] - takeOutCount
         if fromSlots[fromSlot] == 0 then
           crepo.itemMap[itemName].notFull[fromName] = nil
+          if crepo.getTableSize(crepo.itemMap[itemName].notFull[fromName]) == 0 then
+            crepo.itemMap[itemName].notFull[fromName] = nil
+          end
         end
       end
     end
   end
-  --clear empty table
-  for inventoryName, slots in pairs(crepo.itemMap[itemName].notFull) do
-    if crepo.getTableSize(slots) == 0 then
-      crepo.itemMap[itemName].notFull[inventoryName] = nil
-    end
-  end
-  for inventoryName, slots in pairs(crepo.itemMap[itemName].full) do
-    if crepo.getTableSize(slots) == 0 then
-      crepo.itemMap[itemName].notFull[inventoryName] = nil
-    end
-  end
+  crepo.saveItemMap()
 end
 --debug
 crepo.init()
