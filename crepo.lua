@@ -23,10 +23,10 @@ function crepo.generateItemMap()
       if itemInfo.count ~= inventory.getItemLimit(slot) then
         t = crepo.itemMap[itemInfo.name].notFull
       end
-      if t[inventory] == nil then
-        t[inventory] = {}
+      if t[name] == nil then
+        t[name] = {}
       end
-      t[inventory][slot] = itemInfo.count
+      t[name][slot] = itemInfo.count
     end
   end
 end
