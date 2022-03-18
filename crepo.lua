@@ -166,7 +166,7 @@ function crepo.takeOut(itemName, itemCount)
         itemCount = itemCount - takeOutCount
         fromSlots[fromSlot] = fromSlots[fromSlot] - takeOutCount
         if fromSlots[fromSlot] == 0 then
-          crepo.itemMap[itemName].notFull[fromName] = nil
+          crepo.itemMap[itemName].notFull[fromName][fromSlot] = nil
           if crepo.getTableSize(crepo.itemMap[itemName].notFull[fromName]) == 0 then
             crepo.itemMap[itemName].notFull[fromName] = nil
           end
