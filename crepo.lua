@@ -8,6 +8,7 @@ function crepo.getTableSize(t)
 end
 --generate itemMap by scaning each inventory
 function crepo.generateItemMap()
+  crepo.itemMap = {}
   for name, inventory in pairs(crepo.inventoryMap) do
     local itemList = inventory.list()
     for slot, itemInfo in pairs(itemList) do
