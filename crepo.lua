@@ -1,7 +1,7 @@
 crepo = {}
 function crepo.getTableSize(t)
   local size = 0
-  for _, _ in pairs(t) do
+  for _ in pairs(t) do
     size = size + 1
   end
   return size
@@ -121,8 +121,10 @@ function crepo.layIn()
       end
     end
     --clear empty table
-    if crepo.getTableSize(crepo.itemMap[itemName].notFull[inventoryName]) == 0 then
-      crepo.itemMap[itemName].notFull[inventoryName] = nil
+    for inventoryName, slots in pairs(crepo.itemMap[itemName].notFull) do
+      if crepo.getTableSize(slots) == 0 then
+        crepo.itemMap[itemName].notFull[inventoryName] = nil
+      end
     end
   end
 end
@@ -169,11 +171,15 @@ function crepo.takeOut(itemName, itemCount)
     end
   end
   --clear empty table
-  if crepo.getTableSize(crepo.itemMap[itemName].full[inventoryName]) == 0 then
-    crepo.itemMap[itemName].full[inventoryName] = nil
+  for inventoryName, slots in pairs(crepo.itemMap[itemName].notFull) do
+    if crepo.getTableSize(slots) == 0 then
+      crepo.itemMap[itemName].notFull[inventoryName] = nil
+    end
   end
-  if crepo.getTableSize(crepo.itemMap[itemName].notFull[inventoryName]) == 0 then
-    crepo.itemMap[itemName].notFull[inventoryName] = nil
+  for inventoryName, slots in pairs(crepo.itemMap[itemName].full) do
+    if crepo.getTableSize(slots) == 0 then
+      crepo.itemMap[itemName].notFull[inventoryName] = nil
+    end
   end
 end
 --debug
