@@ -1,18 +1,51 @@
 crepo = {}
-function crepo.loadItemMapData()
+function crepo.getTableSize(t)
+  local size = 0
+  for _, _ in pairs(t) do
+    size = size + 1
+  end
+  return size
+end
+--generate itemMap by scaning each inventory
+function crepo.generateItemMap()
+  for name, inventory in pairs(crepo.inventoryMap) do
+    local itemList = inventory.list()
+    for slot, itemInfo in pairs(itemList) do
+      if crepo.itemMap[itemInfo.name] == nil then
+        crepo.itemMap[itemInfo.name] = {}
+        crepo.itemMap[itemInfo.name].count = 0
+        crepo.itemMap[itemInfo.name].full = {}
+        crepo.itemMap[itemInfo.name].notFull = {}
+      end
+      crepo.itemMap[itemInfo.name].count = crepo.itemMap[itemInfo.name].count + itemInfo.count
+      local t = crepo.itemMap[itemInfo.name].full
+      if itemInfo.count ~= inventory.getItemLimit(slot) then
+        t = crepo.itemMap[itemInfo.name].notFull
+      end
+      if t[inventory] == nil then
+        t[inventory] = {}
+      end
+      t[inventory][slot] = itemInfo.count
+    end
+  end
+end
+-- load itemMap from item_map.data or generate if the file doesn't exist.
+function crepo.loadItemMap()
   if fs.exists('item_map.data') then
     local itemMapData = io.open('item_map.data', 'r')
     crepo.itemMap = textutils.unserialize(itemMapData:read('*a'))
     itemMapData:close()
   else
-    crepo.itemMap = {}
+    crepo.generateItemMap()
   end
 end
-function crepo.saveItemMapData()
+-- save itemMap to item_map.data
+function crepo.saveItemMap()
   local itemMapData = io.open('item_map.data', 'w')
   itemMapData:write(textutils.serialize(crepo.itemMap))
   itemMapData:close()
 end
+-- init crepo
 function crepo.init()
   local inventoryList = {peripheral.find('inventory')}
   crepo.inventoryMap = {}
@@ -26,34 +59,14 @@ function crepo.init()
   crepo.outputInventory = crepo.inventoryMap[outputName]
   crepo.inventoryMap[inputName] = nil
   crepo.inventoryMap[outputName] = nil
-  crepo.loadItemMapData()
-  for name, inventory in pairs(crepo.inventoryMap) do
-    local itemList = inventory.list()
-    for slot, itemInfo in pairs(itemList) do
-      if crepo.itemMap[itemInfo.name] == nil then
-        crepo.itemMap[itemInfo.name] = {}
-        crepo.itemMap[itemInfo.name]['count'] = 0
-        crepo.itemMap[itemInfo.name]['slots'] = {}
-      end
-      crepo.itemMap[itemInfo.name]['count'] = crepo.itemMap[itemInfo.name]['count'] + itemInfo.count
-      local slotInfo = {}
-      slotInfo['inventoryName'] = name
-      slotInfo['slot'] = slot
-      slotInfo['count'] = itemInfo.count
-      table.insert(crepo.itemMap[itemInfo.name]['slots'], slotInfo)
-    end
-  end
+  crepo.loadItemMap()
 end
 --get empty slot
 function crepo.getEmptySlot()
   for name, inventory in pairs(crepo.inventoryMap) do
     local itemList = inventory.list()
     if #itemList ~= inventory.size() then
-      local slotInfo = {}
-      slotInfo['inventoryName'] = name
-      slotInfo['slot'] = #itemList + 1
-      slotInfo['count'] = 0
-      return slotInfo
+      return name, #itemList + 1
     end
   end
   return nil
@@ -61,66 +74,102 @@ end
 --store all items in inputInventory
 function crepo.layIn()
   local itemList = crepo.inputInventory.list()
-  for slot, itemInfo in pairs(itemList) do
-    local name, count = itemInfo.name, itemInfo.count
-    if crepo.itemMap[name] == nil then
-      crepo.itemMap[name] = {}
-      crepo.itemMap[name]['count'] = 0
-      crepo.itemMap[name]['slots'] = {}
+  for fromSlot, itemInfo in pairs(itemList) do
+    local itemName = itemInfo.name
+    local itemCount = itemInfo.count
+    -- create data if don't have this item before
+    if crepo.itemMap[itemName] == nil then
+      crepo.itemMap[itemName] = {}
+      crepo.itemMap[itemName].count = 0
+      crepo.itemMap[itemName].full = {}
+      crepo.itemMap[itemName].notFull = {}
     end
-    while count > 0 do
-      local slots = crepo.itemMap[name]['slots']
-      local lastSlot = slots[#slots]
-      -- if lastSlot is full, find a new empty slot
-      if lastSlot == nil or lastSlot.count == crepo.inventoryMap[lastSlot.inventoryName].getItemLimit(lastSlot.slot) then
-        emptySlot = crepo.getEmptySlot()
-        if emptySlot == nil then
-          break
+    while itemCount > 0 do
+      --if don't have not full slot, find an empty slot
+      if crepo.getTableSize(crepo.itemMap[itemName].notFull) == 0 then
+        local name, slot = crepo.getEmptySlot()
+        if name == nil then
+          goto NextLayInSlot
         end
-        table.insert(slots, emptySlot)
-        lastSlot = slots[#slots]
-      end
-      local layInCount = crepo.inputInventory.pushItems(lastSlot.inventoryName, slot, count, lastSlot.slot)
-      if layInCount == 0 then
-        if emptySlot == nil then
-          break
+        if crepo.itemMap[name].notFull[name] == nil then
+          crepo.itemMap[name].notFull[name] = {}
         end
-        table.insert(slots, emptySlot)
-        lastSlot = slots[#slots]
+        crepo.itemMap[name].notFull[name][slot] = 0
       end
-      print(name, '*', layInCount, ' to ', lastSlot.inventoryName, "'s ", lastSlot.slot, 'slot.')
-      lastSlot.count = lastSlot.count + layInCount
-      crepo.itemMap[name].count = crepo.itemMap[name].count + layInCount
-      count = count - layInCount
+      --traverse all not full slot and put items in
+      for toName, toSlots in pairs(crepo.itemMap[itemName].notFull) do
+        for toSlot, toSlotCount in pairs(toSlots) do
+          if itemCount == 0 then
+            goto NextLayInSlot
+          end
+          local layInCount = crepo.inputInventory.pushItems(toName, fromSlot, itemCount, toSlot)
+          itemCount = itemCount - layInCount
+          toSlots[toSlot] = toSlots[toSlot] + layInCount
+          local slotLimit = crepo.inventoryMap[toName].getItemLimit(toSlot)
+          if toSlots[toSlot] == slotLimit then
+            if crepo.itemMap[itemName].full[toName] == nil then
+              crepo.itemMap[itemName].full[toName] = {}
+            end
+            crepo.itemMap[itemName].full[toName][toSlot] = toSlots[toSlot]
+            toSlots[toSlot] = nil
+          end
+        end
+      end
+    end
+    ::NextLayInSlot::
+    --clear empty table
+    if crepo.getTableSize(crepo.itemMap[itemName].notFull[inventoryName]) == 0 then
+      crepo.itemMap[itemName].notFull[inventoryName] = nil
     end
   end
-  crepo.saveItemMapData()
 end
-function crepo.takeOut(name, count)
-  if crepo.itemMap[name] == nil then
+--take out items from repository
+function crepo.takeOut(itemName, itemCount)
+  --return 0 if don't have this item
+  if crepo.itemMap[itemName] == nil then
     return 0
   end
-  local takeOutCount = 0
-  while count > 0 do
-    local slots = crepo.itemMap[name]['slots']
-    local lastSlot = slots[#slots]
-    -- if lastSlot's count is 0, del it.
-    if lastSlot.count == 0 then
-      table.remove(slots)
-      lastSlot = slots[#slots]
-      if lastSlot == nil then
-        crepo.itemMap[name] = nil
-        crepo.saveItemMapData()
-        return takeOutCount
+  while itemCount > 0 do
+    --if don't have not full slot, select an full slot
+    if crepo.getTableSize(crepo.itemMap[itemName].notFull) == 0 then
+      if crepo.getTableSize(crepo.itemMap[itemName].full) == 0 then
+        goto TakeOutFinish
+      end
+      for name, slots in pairs(crepo.itemMap[itemName].full) do
+        for slot, count in pairs(slots) do
+          if crepo.itemMap[itemName].notFull[name] == nil then
+            crepo.itemMap[itemName].notFull[name] = {}
+          end
+          crepo.itemMap[itemName].notFull[name][slot] = count
+          crepo.itemMap[itemName].full[name][slot] = nil
+          break
+        end
+        break
       end
     end
-    local takeOutCount = crepo.outputInventory.pullItems(lastSlot.inventoryName, lastSlot.slot, count)
-    lastSlot.count = lastSlot.count - takeOutCount
-    crepo.itemMap[name].count = crepo.itemMap[name].count - takeOutCount
-    count = count - takeOutCount
+    --traverse all not full slot and take items out
+    for fromName, fromSlots in pairs(crepo.itemMap[itemName].notFull) do
+      for fromSlot, fromSlotCount in pairs(fromSlots) do
+        if itemCount == 0 then
+          goto TakeOutFinish
+        end
+        local takeOutCount = crepo.outputInventory.pullItems(fromName, fromSlot, itemCount)
+        itemCount = itemCount - takeOutCount
+        fromSlots[fromSlot] = fromSlots[fromSlot] - takeOutCount
+        if fromSlots[fromSlot] == 0 then
+          crepo.itemMap[itemName].notFull[fromName] = nil
+        end
+      end
+    end
   end
-  crepo.saveItemMapData()
-  return takeOutCount
+  ::TakeOutFinish::
+  --clear empty table
+  if crepo.getTableSize(crepo.itemMap[itemName].full[inventoryName]) == 0 then
+    crepo.itemMap[itemName].full[inventoryName] = nil
+  end
+  if crepo.getTableSize(crepo.itemMap[itemName].notFull[inventoryName]) == 0 then
+    crepo.itemMap[itemName].notFull[inventoryName] = nil
+  end
 end
 --debug
 crepo.init()
