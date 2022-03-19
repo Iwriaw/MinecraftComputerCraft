@@ -41,8 +41,8 @@ function ctable.clone(self)
   return newCtable
 end
 setmetatable(ctable, {
-  __call = function()
-    local newCtable = {}
+  __call = function(t)
+    local newCtable = t or {}
     local metaCtable = {
       __index = ctable,
       __eq = ctable.equals
