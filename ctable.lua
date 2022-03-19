@@ -9,16 +9,16 @@ function ctable.equals(self, t)
   if type(self) ~= type(t) then
     return false
   end
-  local diff = false
+  local equal = true
   if type(self) == 'table' then
     for k in pairs(self) do
-      diff = diff or ctable.equals(self[k], t[k])
+      equal = equal and ctable.equals(self[k], t[k])
     end
     for k in pairs(t) do
-      diff = diff or ctable.equals(self[k], t[k])
+      equal = equal and ctable.equals(self[k], t[k])
     end
   else
-    diff = self ~= t
+    equal = self == t
   end
   return equal
 end
