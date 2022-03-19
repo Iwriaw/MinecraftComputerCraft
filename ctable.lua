@@ -33,22 +33,11 @@ function ctable.clone(self)
   end
   return newCtable
 end
-function ctable.insert(self, key, value)
-  rawset(self, key, value)
-  self.size = self.size + 1
-end
-function ctable.erase(self, key)
-  if self[key] then
-    self[key] = nil
-    self.size = self.size - 1
-  end
-end
 setmetatable(ctable, {
   __call = function()
-    local newCtable = {size = 0}
+    local newCtable = {}
     local metaCtable = {
       __index = ctable,
-      __newindex = ctable.insert,
       __eq = ctable.equals
     }
     return setmetatable(newCtable, metaCtable)
