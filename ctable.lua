@@ -5,6 +5,13 @@ function ctable.empty(self)
   end
   return false
 end
+function ctable.size(self)
+  local size = 0
+  for _ in pairs(self) do
+    size = size + 1
+  end
+  return size
+end
 function ctable.equals(self, t)
   if type(self) ~= type(t) then
     return false
