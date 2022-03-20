@@ -48,4 +48,3 @@ function ctable.new(t)
     }
     return setmetatable(newCtable, metaCtable)
 end
-return ctable

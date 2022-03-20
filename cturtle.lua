@@ -541,3 +541,4 @@ function cturtle.tableCompare(t1, t2)
   end
   return equal
 end
+return cturtle
