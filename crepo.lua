@@ -1,9 +1,7 @@
-assert(ctable, 
-  'need dofile ctable before crepo'
-)
-crepo = ctable()
+require('ctable')
+crepo = ctable.new()
 function crepo.itemMapToInventoryMap(itemMap)
-  itemMap = ctable()
+  itemMap = ctable.new()
   for itemName, itemStorage in pairs(itemMap) do
   end
 end
@@ -12,15 +10,15 @@ function crepo.inventoryMapItemMap(inventoryMap)
 end
 --generate itemMap by scaning each inventory
 function crepo.generateItemMap()
-  crepo.itemMap = ctable()
+  crepo.itemMap = ctable.new()
   for name, inventory in pairs(crepo.inventories) do
     local itemList = inventory.list()
     for slot, itemInfo in pairs(itemList) do
       if crepo.itemMap[itemInfo.name] == nil then
-        crepo.itemMap[itemInfo.name] = ctable()
+        crepo.itemMap[itemInfo.name] = ctable.new()
         crepo.itemMap[itemInfo.name].count = 0
-        crepo.itemMap[itemInfo.name].full = ctable()
-        crepo.itemMap[itemInfo.name].notFull = ctable()
+        crepo.itemMap[itemInfo.name].full = ctable.new()
+        crepo.itemMap[itemInfo.name].notFull = ctable.new()
       end
       crepo.itemMap[itemInfo.name].count = crepo.itemMap[itemInfo.name].count + itemInfo.count
       local t = crepo.itemMap[itemInfo.name].full
@@ -28,7 +26,7 @@ function crepo.generateItemMap()
         t = crepo.itemMap[itemInfo.name].notFull
       end
       if t[name] == nil then
-        t[name] = ctable()
+        t[name] = ctable.new()
       end
       t[name][slot] = itemInfo.count
     end
@@ -52,8 +50,8 @@ function crepo.saveItemMap()
 end
 -- init crepo
 function crepo.init()
-  local inventoryList = {peripheral.find('inventory')}
-  crepo.inventories = ctable()
+  local inventoryList = ctable.new({peripheral.find('inventory')})
+  crepo.inventories = ctable.new()
 
   for _, inventory in pairs(inventoryList) do
     local name = peripheral.getName(inventory)
@@ -66,7 +64,7 @@ function crepo.init()
   crepo.outputInventory = crepo.inventories[outputName]
   crepo.inventories[inputName] = nil
   crepo.inventories[outputName] = nil
-  crepo.inventoryNameList = ctable()
+  crepo.inventoryNameList = ctable.new()
   for inventoryName in pairs(crepo.inventories) do
     table.insert(crepo.inventoryNameList, inventoryName)
   end
@@ -97,10 +95,10 @@ function crepo.layIn()
     local itemCount = itemInfo.count
     -- create data if don't have this item before
     if crepo.itemMap[itemName] == nil then
-      crepo.itemMap[itemName] = ctable()
+      crepo.itemMap[itemName] = ctable.new()
       crepo.itemMap[itemName].count = 0
-      crepo.itemMap[itemName].full = ctable()
-      crepo.itemMap[itemName].notFull = ctable()
+      crepo.itemMap[itemName].full = ctable.new()
+      crepo.itemMap[itemName].notFull = ctable.new()
     end
     while itemCount > 0 do
       --if don't have not full slot, find an empty slot
@@ -110,7 +108,7 @@ function crepo.layIn()
           break
         end
         if crepo.itemMap[itemName].notFull[name] == nil then
-          crepo.itemMap[itemName].notFull[name] = ctable()
+          crepo.itemMap[itemName].notFull[name] = ctable.new()
         end
         crepo.itemMap[itemName].notFull[name][slot] = 0
       end
@@ -130,7 +128,7 @@ function crepo.layIn()
           local slotLimit = crepo.inventories[toName].getItemDetail(toSlot).maxCount
           if toSlots[toSlot] == slotLimit then
             if crepo.itemMap[itemName].full[toName] == nil then
-              crepo.itemMap[itemName].full[toName] = ctable()
+              crepo.itemMap[itemName].full[toName] = ctable.new()
             end
             crepo.itemMap[itemName].full[toName][toSlot] = toSlots[toSlot]
             toSlots[toSlot] = nil
@@ -162,7 +160,7 @@ function crepo.takeOut(itemName, itemCount)
         for slot, count in pairs(slots) do
           print('move full to notFull')
           if crepo.itemMap[itemName].notFull[name] == nil then
-            crepo.itemMap[itemName].notFull[name] = ctable()
+            crepo.itemMap[itemName].notFull[name] = ctable.new()
           end
           crepo.itemMap[itemName].notFull[name][slot] = count
           crepo.itemMap[itemName].full[name][slot] = nil
@@ -199,4 +197,4 @@ function crepo.takeOut(itemName, itemCount)
   crepo.saveItemMap()
 end
 --debug
-crepo.init()
+return crepo
