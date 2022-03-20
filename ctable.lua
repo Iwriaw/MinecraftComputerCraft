@@ -1,9 +1,9 @@
 ctable = {}
 function ctable.empty(self)
   for _ in pairs(self) do
-    return true
+    return false
   end
-  return false
+  return true
 end
 function ctable.size(self)
   local size = 0

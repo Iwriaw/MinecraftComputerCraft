@@ -1,13 +1,5 @@
 require('ctable')
 crepo = ctable.new()
-function crepo.itemMapToInventoryMap(itemMap)
-  itemMap = ctable.new()
-  for itemName, itemStorage in pairs(itemMap) do
-  end
-end
-function crepo.inventoryMapItemMap(inventoryMap)
-
-end
 --generate itemMap by scaning each inventory
 function crepo.generateItemMap()
   crepo.itemMap = ctable.new()
@@ -75,7 +67,6 @@ crepo.getEmptySlotInventoryId = 1
 function crepo.getEmptySlot()
   local inventoryNameListSize = #crepo.inventoryNameList
   for id = 1, inventoryNameListSize do
-    print(crepo.getEmptySlotInventoryId)
     local inventoryName = crepo.inventoryNameList[crepo.getEmptySlotInventoryId]
     local inventory = crepo.inventories[inventoryName]
     local itemList = inventory.list()
@@ -122,7 +113,6 @@ function crepo.layIn()
             break
           end
           local layInCount = crepo.inputInventory.pushItems(toName, fromSlot, itemCount, toSlot)
-          print('lay in', layInCount)
           itemCount = itemCount - layInCount
           toSlots[toSlot] = toSlots[toSlot] + layInCount
           local slotLimit = crepo.inventories[toName].getItemDetail(toSlot).maxCount
@@ -147,7 +137,6 @@ function crepo.takeOut(itemName, itemCount)
   --return 0 if don't have this item
 
   while itemCount > 0 do
-    print(itemCount)
     --if don't have not full slot, select an full slot
     if crepo.itemMap[itemName] == nil then
       break
@@ -158,7 +147,6 @@ function crepo.takeOut(itemName, itemCount)
       end
       for name, slots in pairs(crepo.itemMap[itemName].full) do
         for slot, count in pairs(slots) do
-          print('move full to notFull')
           if crepo.itemMap[itemName].notFull[name] == nil then
             crepo.itemMap[itemName].notFull[name] = ctable.new()
           end
@@ -183,7 +171,6 @@ function crepo.takeOut(itemName, itemCount)
         end
         local takeOutCount = crepo.outputInventory.pullItems(fromName, fromSlot, itemCount)
         itemCount = itemCount - takeOutCount
-        print('get', itemCount)
         fromSlots[fromSlot] = fromSlots[fromSlot] - takeOutCount
         if fromSlots[fromSlot] == 0 then
           crepo.itemMap[itemName].notFull[fromName][fromSlot] = nil
