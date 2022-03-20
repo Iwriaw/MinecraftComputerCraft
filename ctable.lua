@@ -40,6 +40,12 @@ function ctable.clone(self)
   end
   return newCtable
 end
+function ctable.merge(self, t)
+  for k, v in pairs(t) do
+    self[k] = v
+  end
+  return self
+end
 function ctable.new(t)
   local newCtable = t or {}
     local metaCtable = {
