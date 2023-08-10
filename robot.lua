@@ -15,7 +15,6 @@ Robot = {
     getItemDetail = turtle.getItemDetail
 }
 
--- 转向到指定方向
 function Robot.turnTo(direction)
     direction = direction or Robot.direction
 
@@ -36,7 +35,6 @@ function Robot.turnTo(direction)
     return err
 end
 
--- 朝指定方向移动一格
 function Robot.move(direction)
     direction = direction or Robot.direction
 
@@ -57,7 +55,6 @@ function Robot.move(direction)
     return err
 end
 
--- 挖指定方向方块
 function Robot.dig(direction, side)
     direction = direction or Robot.direction
 
@@ -74,7 +71,6 @@ function Robot.dig(direction, side)
     return err
 end
 
--- 在指定方向 放置/使用 物品
 function Robot.place(direction, text)
     direction = direction or Robot.direction
 
@@ -91,7 +87,6 @@ function Robot.place(direction, text)
     return err
 end
 
--- 在指定方向丢弃物品
 function Robot.drop(direction, count)
     direction = direction or Robot.direction
 
@@ -108,7 +103,6 @@ function Robot.drop(direction, count)
     return err
 end
 
--- 检测指定方向是否存在方块
 function Robot.detect(direction)
     direction = direction or Robot.direction
 
@@ -125,7 +119,6 @@ function Robot.detect(direction)
     return ok, err
 end
 
--- 比较指定方向方块是否与手中方块相同
 function Robot.compare(direction)
     direction = direction or Robot.direction
 
@@ -142,7 +135,6 @@ function Robot.compare(direction)
     return ok, err
 end
 
--- 攻击指定方向
 function Robot.attack(direction, side)
     direction = direction or Robot.direction
 
@@ -159,7 +151,6 @@ function Robot.attack(direction, side)
     return err
 end
 
--- 拾取指定方向物品
 function Robot.suck(direction, count)
     direction = direction or Robot.direction
 

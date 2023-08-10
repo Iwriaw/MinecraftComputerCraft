@@ -4,7 +4,6 @@ Cuboid = {}
 
 CuboidMeta = {__index = Cuboid}
 
--- 构造函数
 function Cuboid.new(u, v)
     u = u or vector.new()
     v = v or vector.new()
