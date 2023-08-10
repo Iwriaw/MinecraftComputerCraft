@@ -7,7 +7,7 @@ Direction = {
     UP = "UP"
 }
 
-Direction.opposite = {
+local oppositeDirection = {
     NORTH = Direction.SOUTH,
     WEST = Direction.EAST,
     SOUTH = Direction.NORTH,
@@ -16,46 +16,60 @@ Direction.opposite = {
     UP = Direction.DOWN
 }
 
-Direction.left = {
+local leftDirection = {
     NORTH = Direction.WEST,
     WEST = Direction.SOUTH,
     SOUTH = Direction.EAST,
     EAST = Direction.NORTH
 }
 
-Direction.right = {
+local rightDirection = {
     NORTH = Direction.EAST,
-    WEST = Direction.SOUTH,
+    WEST = Direction.NORTH,
     SOUTH = Direction.WEST,
-    EAST = Direction.NORTH
+    EAST = Direction.SOUTH
 }
 
-Direction.vector = {
+local directionVector = {
     NORTH = vector.new(0, 0, -1),
-    EAST = vector.new(1, 0, 0),
-    SOUTH = vector.new(0, 0, 1),
     WEST = vector.new(-1, 0, 0),
-    UP = vector.new(0, 1, 0),
-    DOWN = vector.new(0, -1, 0)
+    SOUTH = vector.new(0, 0, 1),
+    EAST = vector.new(1, 0, 0),
+    DOWN = vector.new(0, -1, 0),
+    UP = vector.new(0, 1, 0)
+}
+
+local vectorDirection = {
+    [vector.new(0, 0, -1):tostring()] = Direction.NORTH,
+    [vector.new(-1, 0, 0):tostring()] = Direction.WEST,
+    [vector.new(0, 0, 1):tostring()] = Direction.SOUTH,
+    [vector.new(1, 0, 0):tostring()] = Direction.EAST,
+    [vector.new(0, -1, 0):tostring()] = Direction.DOWN,
+    [vector.new(0, 1, 0):tostring()] = Direction.UP
 }
 
 function Direction.getOpposite(direction)
-    local opposite = Direction.opposite[direction]
+    local opposite = oppositeDirection[direction]
     return opposite
 end
 
 function Direction.getLeft(direction)
-    local left = Direction.left[direction]
+    local left = leftDirection[direction]
     return left
 end
 
 function Direction.getRight(direction)
-    local right = Direction.right[direction]
+    local right = rightDirection[direction]
     return right
 end
 
-function Direction.getVector(direction)
-    local vector = Direction.vector[direction]
+function Direction.fromVector(vector)
+    local direction = vectorDirection[vector:tostring()]
+    return direction
+end
+
+function Direction.toVector(direction)
+    local vector = directionVector[direction]
     return vector
 end
 

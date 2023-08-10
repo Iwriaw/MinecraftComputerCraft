@@ -51,7 +51,7 @@ function Robot.move(direction)
     end
 
     if not err then
-        Robot.position = Robot.position + Direction.getVector(direction)
+        Robot.position = Robot.position + Direction.toVector(direction)
     end
 
     return err
